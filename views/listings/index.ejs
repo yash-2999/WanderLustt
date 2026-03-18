@@ -1,0 +1,141 @@
+<% layout("/layouts/boilerplate") %>
+
+
+    <style>
+        #filters{
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+
+        }
+       .filter{
+            text-align: center;
+            margin-right: 2rem;
+            margin-top: 1rem;
+            opacity: 0.7;
+            text-decoration: none;
+            color: black;
+        }
+        .filter:hover{
+            opacity: 1;
+            cursor: pointer;
+        }
+        .filter p{
+            font-size:0.8rem;
+        }
+        .tax-info{
+          display: none;  
+        }
+        .tax-toggle{
+            border: 1px solid black;
+            border-radius: 1rem;
+            height: 3.5rem;
+            padding: 1rem;
+            margin-left: 5rem;
+            display: flex;
+            align-items: center;
+        }
+        .tax-price small{
+            color: gray;
+            font-size: 0.8rem;
+        }
+    </style>
+
+<div id="filters">
+
+    <a href="/listings" class="filter">
+        <div><i class="fa-solid fa-fire"></i></div>
+        <p>Trending</p>
+    </a>
+
+    <a href="/listings/category/mountains" class="filter">
+        <div><i class="fa-solid fa-mountain"></i></div>
+        <p>Mountains</p>
+    </a>
+
+    <a href="/listings/category/arctic" class="filter">
+        <div><i class="fa-solid fa-snowflake"></i></div>
+        <p>Arctic</p>
+    </a>
+
+    <a href="/listings/category/deserts" class="filter">
+        <div><i class="fa-solid fa-sun"></i></div>
+        <p>Deserts</p>
+    </a>
+
+    <a href="/listings/category/farms" class="filter">
+        <div><i class="fa-solid fa-tractor"></i></div>
+        <p>Farms</p>
+    </a>
+    <div class="tax-toggle">
+        <div class="form-check-reverse form-switch ">
+                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                <label class="form-check-label" for="flexSwitchCheckDefault">Display total after Taxes</label>
+        </div>
+    </div>
+</div>
+
+
+    <!-- <h3>All Listings</h3> -->
+    <!-- <form action="/listings/new" method="GET">
+        <button>Create New Listing</button>
+    </form> -->
+
+</div> <!-- filters end -->
+
+
+<% if(allListings.length === 0){ %>
+    <h4 style="margin:2rem; text-align:center;">No results found</h4>
+<% } %>
+
+
+<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+
+    <% for(let listing of allListings){ %>
+        <a href="/listings/<%= listing._id%>" class="listing-link">
+                <div class="card col listing-card">
+                    <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_image" style="height: 20rem;">
+                    <div class="card-img-overlay"></div>
+                    <div class="card-body">
+                       <p class="card-text">
+                            <b><%= listing.title %></b><br>
+
+                            <span class="base-price">
+                                 ₹<%= listing.price ? listing.price.toLocaleString("en-IN") : "Price not set" %>
+                            </span>
+
+                            <span class="tax-price" style="display:none;">
+                                 ₹<%= listing.price ? Math.round(listing.price * 1.18).toLocaleString("en-IN") : "" %>
+                                <small>(incl. GST)</small>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+        </a>
+
+    <% } %>
+
+</div>
+
+
+<script>
+    // Price after GST logic
+let taxSwitch = document.getElementById("flexSwitchCheckDefault");
+
+taxSwitch.addEventListener("change", () => {
+    let basePrices = document.getElementsByClassName("base-price");
+    let taxPrices = document.getElementsByClassName("tax-price");
+
+    for (let i = 0; i < basePrices.length; i++) {
+        if (taxSwitch.checked) {
+            basePrices[i].style.display = "none";
+            taxPrices[i].style.display = "inline";
+        } else {
+            basePrices[i].style.display = "inline";
+            taxPrices[i].style.display = "none";
+        }
+    }
+});
+</script>
+
+
